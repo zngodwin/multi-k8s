@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replica: 3
+  selector:
+    matchLabels:
+      component: server
+  template:
+    metadata:
+      lables:
+        component: server
+      spec:
+        containers:
+          - name: server
+            image: zgodwin1/multi-server
+            ports:
+              - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector: 
+    component: web
+  ports:
+    - port: 3000
+      targetPort: 3000 
