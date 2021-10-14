@@ -8,4 +8,17 @@ before_install:
   - gcloud components update kubectl
   - gcloud auth activate-service-account --key-file service-account.json
   - gcloud auth activiate-serice-account --key-file service-account.json
-  
+  - gcloud config set project unified-destiny-328302
+  - gcloud config set compute/zone us-east1-c
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNMAE" --password-stdin
+  - docker build -t zgodwin1/react-test -f ./client/Dockerfile.dev ./client
+
+  script:
+    - docker run -e CI=true USERNAME/react-test npm test
+
+  deploy:
+    provider: script 
+    script: bash ./deploy.sh 
+    on: 
+      branch: master
